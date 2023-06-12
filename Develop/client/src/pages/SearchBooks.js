@@ -15,6 +15,8 @@ import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
+
+  const colValue = "col-"
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
 
@@ -50,6 +52,7 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
+        link: "" 
       }));
 
       setSearchedBooks(bookData);
@@ -92,7 +95,7 @@ const SearchBooks = () => {
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
             <Row>
-              <Col xs={12} md={8}>
+              <Col xs={12} md={8} key={colValue+"-1"}>
                 <Form.Control
                   name='searchInput'
                   value={searchInput}
@@ -102,7 +105,7 @@ const SearchBooks = () => {
                   placeholder='Search for a book'
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} key={`${colValue}-2`}>
                 <Button type='submit' variant='success' size='lg'>
                   Submit Search
                 </Button>
@@ -119,9 +122,10 @@ const SearchBooks = () => {
             : 'Search for a book to begin'}
         </h2>
         <Row>
-          {searchedBooks.map((book) => {
+          {searchedBooks.map((book, index) => {
+            console.log(index);
             return (
-              <Col md="4">
+              <Col md="4" key={index}>
                 <Card key={book.bookId} border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />

@@ -1,22 +1,19 @@
-const { Book, User } = require('../models');
+const { User } = require('../models');
 
 const resolvers = {
   Query: {
-    book: async () => {
+    me: async () => {
       return Book.find({});
     },
-    User: async (parent, { _id }) => {
-      const params = _id ? { _id } : {};
-      return User.find(params);
-    },
+
   },
   Mutation: {
-    createUser: async (parent, args) => {
+    signup: async (parent, args) => {
       const user = await User.create(args);
       return user;
     },
-    createVote: async (parent, { _id, bookNum }) => {
-      const vote = await User.findOneAndUpdate(
+    clogin: async (parent, { _id, bookNum }) => {
+      const vote = await User.findOne(
         { _id },
         { $inc: { [`book${bookNum}_votes`]: 1 } },
         { new: true }

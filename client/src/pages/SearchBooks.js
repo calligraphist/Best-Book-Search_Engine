@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Jumbotron,
+  //Jumbotron,
   Container,
   Col,
   Form,
   Button,
   Card,
-  CardColumns
+  Row
+  // CardColumns
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
@@ -15,13 +16,13 @@ import {SAVE_BOOK} from '../utils/mutations';
 // import {SAVE_BOOK} from '../utils/mutations';
 // import { GET_ME } from '../utils/queries';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-import {useMutation} from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
 
-  // const colValue = "col-"
+   const colValue = "col-"
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
 
@@ -60,8 +61,8 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
-        // link: book.volumeInfo.infoLink,
-        // link: "" 
+         link: book.volumeInfo.infoLink,
+         //link: "" 
       }));
 
       setSearchedBooks(bookData);
@@ -84,11 +85,11 @@ const SearchBooks = () => {
     }
 
     try {
-      await saveBook({
-        variables: { newBook: { ...bookToSave } },
-      });
+      // await saveBook({
+      //   variables: { newBook: { ...bookToSave } },
+      // });
       // I replace the following code with the one above.
-      //const response = await saveBook(bookToSave, token);
+      const response = await saveBook(bookToSave, token);
 
       if (!response.ok) {
         throw new Error('something went wrong!');
@@ -103,14 +104,12 @@ const SearchBooks = () => {
 
   return (
     <>
-      <Jumbotron fluid className="text-light bg-dark"> 
-                                         {/* p-5 */}
+      <div className="text-light bg-dark p-5">
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
-            <Form.Row>
+            <Row>
               <Col xs={12} md={8}>
-              {/* key={colValue+"-1"} */}
                 <Form.Control
                   name='searchInput'
                   value={searchInput}
@@ -121,28 +120,25 @@ const SearchBooks = () => {
                 />
               </Col>
               <Col xs={12} md={4}>
-              {/* key={`${colValue}-2`} */}
                 <Button type='submit' variant='success' size='lg'>
                   Submit Search
                 </Button>
               </Col>
-            </Form.Row>
+            </Row>
           </Form>
         </Container>
-      </Jumbotron>
+      </div>
 
       <Container>
-        <h2 >
-        {/* className='pt-5' */}
+        <h2 className='pt-5'>
           {searchedBooks.length
             ? `Viewing ${searchedBooks.length} results:`
             : 'Search for a book to begin'}
         </h2>
-        <CardColumns>
+        <Row>
           {searchedBooks.map((book) => {
-           
             return (
-              // <Col md="4" key={index}>
+              <Col md="4">
                 <Card key={book.bookId} border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
@@ -163,10 +159,10 @@ const SearchBooks = () => {
                     )}
                   </Card.Body>
                 </Card>
-              // </Col>
+              </Col>
             );
           })}
-        </CardColumns>
+        </Row>
       </Container>
     </>
   );
